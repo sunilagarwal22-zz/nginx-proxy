@@ -1,0 +1,50 @@
+version: "3.2"
+services:
+  webapp:
+    image: hashicorp/http-echo
+    command: ["-text", "hello world"]
+    networks:
+      - appnet
+    ports:
+      - 5678:5678
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.role == worker
+      resources:
+        limits:
+          memory: 256m
+      restart_policy:
+        condition: any
+        delay: 20s
+        max_attempts: 10
+
+  nginx:
+    image: sunilthemaster/nginx:ssl
+    networks:
+      - appnet
+    ports:
+      - 443:443
+      - 80:80
+    depends_on:
+      - webapp
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
+      resources:
+        limits:
+          memory: 512m
+      restart_policy:
+        condition: any
+        delay: 20s
+        max_attempts: 10
+    volumes:
+      - /var/log:/var/log/nginx
+
+networks:
+  appnet:
+    driver: overlay
+    attachable: true
