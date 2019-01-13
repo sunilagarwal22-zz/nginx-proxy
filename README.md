@@ -51,3 +51,4 @@ docker run -dt --name webapp --net mynet -p 80:80 -p 443:443 sunilthemaster/ngin
 
 ## TODO
 * As of now http-echo is fixed to listen on 5678 port which can be parameterized.
+* No cryptogrphic protocols specified in nginx.
